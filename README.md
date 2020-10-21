@@ -6,9 +6,21 @@
 
 ```js
 module.exports = {
-  wxWorkToken: ' 企业微信机器人 token '
+  jslKzz: {
+    wxWorkTokens: [
+      企业微信机器人 token
+      ...
+    ],
+  },
+  countDown: {
+    wxWorkTokens: [
+      企业微信机器人 token
+      ...
+    ],
+  }
 }
 ```
 
 ## 2. 脚本列表
 1. 集思录可转债接口 `scripts/jsl-kzz.js`
+2. 天数倒计时: `scripts/count-down.js`

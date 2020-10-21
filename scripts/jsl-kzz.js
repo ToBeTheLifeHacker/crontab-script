@@ -1,6 +1,9 @@
 // 集思录可转债接口
 const rp = require('request-promise');
-const { wxWorkToken } = require('../crontab-script-config');
+const { jslKzz } = require('../crontab-script-config');
+const sendToWxwork = require('./util/send-to-wxwork');
+const { wxWorkTokens } = jslKzz;
+
 const isSameDay = (first, second) => {
   if(!first || !second) {
     return false;
@@ -10,23 +13,6 @@ const isSameDay = (first, second) => {
     first.getMonth() === second.getMonth() &&
     first.getDate() === second.getDate()
   )
-}
-
-const sendToWxwork = (content) => {
-  return rp({
-    method: 'POST',
-    uri: `https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=${wxWorkToken}`,
-    body: {
-      msgtype: "markdown",
-      markdown: {
-        content,
-      }
-    },
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    json: true
-  })
 }
 
 rp({
@@ -51,17 +37,26 @@ rp({
         })
       }
     })
+
+    // 过滤出当天的信息
     result = result.filter(item => {
       return isSameDay(new Date(item.date), new Date())
     })
+
+    const messages = [];
+
     try {
       if(result.length) {
         for(let i = 0; i < 2; i++ ) {
-          await sendToWxwork(`可转债: ${result[i].name}, 申购建议: ${result[i].advice}`)
+          messages.push(`可转债: ${result[i].name}, 申购建议: ${result[i].advice}`);
         }
       } else {
-        await sendToWxwork(`今日无可转债!`)
+        messages.push(`今日无可转债!`)
       }
+
+      const message = messages.join('\n');
+
+      await sendToWxwork(message, wxWorkTokens)
     } catch (e) {
       console.log('发生错误', e)
     }
