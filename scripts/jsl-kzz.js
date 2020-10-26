@@ -47,7 +47,7 @@ rp({
 
     try {
       if(result.length) {
-        for(let i = 0; i < 2; i++ ) {
+        for(let i = 0; i < result.length; i++ ) {
           messages.push(`可转债: ${result[i].name}, 申购建议: ${result[i].advice}`);
         }
       } else {
